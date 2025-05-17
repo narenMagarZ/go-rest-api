@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"net/http"
 
 	"rest-api/internal/config"
 	"rest-api/internal/controllers"
@@ -25,7 +24,6 @@ func main() {
 
 	port := os.Getenv("PORT")
 	router := gin.Default()
-	router.Run(fmt.Sprintf(":%s", port))
 
 	db := config.ConnectDB()
 
@@ -34,31 +32,31 @@ func main() {
 	userRepository := repositories.NewUserRepository(db);
 	userService := services.NewUserService(userRepository);
 
-	userController := controllers.NewUserController(userService);
-
 	api := router.Group("/api/v1")
 	api.Use(middlewares.Logger());
 	{
 		auth := api.Group("/auth")
+		authController := controllers.NewAuthController(userService);
 		{
-			auth.POST("/login")
-			auth.POST("/register")
+			auth.POST("/login", authController.Login)
+			auth.POST("/signup", authController.Signup)
 		}
 
 		users := api.Group("/users")
 		users.Use(middlewares.Authenticate());
 		{
+			
+		
+			userController := controllers.NewUserController(userService);
+
 			users.GET("/", userController.GetAllUsers)
 			users.POST("/", userController.CreateUser)
-			users.GET("/:id", func(ctx *gin.Context) {
-				ctx.JSON(http.StatusOK, gin.H{
-					"message": "User fetched successfully",
-					"status": true,
-				})
-			})
+			users.GET("/:id", userController.GetUser)
 			users.PUT("/:id", userController.UpdateUser)
 			users.DELETE("/:id", userController.DeleteUser)
 		}
 
 	}
+
+	router.Run(fmt.Sprintf(":%s", port))
 }
