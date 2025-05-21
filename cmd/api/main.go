@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"os"
 
 	"rest-api/internal/config"
 	"rest-api/internal/controllers"
@@ -13,16 +11,9 @@ import (
 	"rest-api/internal/services"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	port := os.Getenv("PORT")
 	router := gin.Default()
 
 	db := config.ConnectDB()
@@ -43,14 +34,12 @@ func main() {
 		}
 
 		users := api.Group("/users")
-		users.Use(middlewares.Authenticate());
+		users.Use(middlewares.Authenticate(userService));
 		{
 			
-		
 			userController := controllers.NewUserController(userService);
 
 			users.GET("/", userController.GetAllUsers)
-			users.POST("/", userController.CreateUser)
 			users.GET("/:id", userController.GetUser)
 			users.PUT("/:id", userController.UpdateUser)
 			users.DELETE("/:id", userController.DeleteUser)
@@ -58,5 +47,6 @@ func main() {
 
 	}
 
-	router.Run(fmt.Sprintf(":%s", port))
+	router.Run(fmt.Sprintf(":%s", config.AppConfig().Port))
+
 }
