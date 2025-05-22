@@ -27,7 +27,9 @@ func main() {
 	api.Use(middlewares.Logger());
 	{
 		auth := api.Group("/auth")
-		authController := controllers.NewAuthController(userService);
+		authService := services.NewAuthService(userRepository);
+		authController := controllers.NewAuthController(userService, authService);
+
 		{
 			auth.POST("/login", authController.Login)
 			auth.POST("/signup", authController.Signup)
