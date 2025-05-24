@@ -3,6 +3,7 @@ package services
 import (
 	"rest-api/internal/models"
 	"rest-api/internal/repositories"
+	"rest-api/internal/types"
 )
 
 
@@ -35,7 +36,7 @@ func (s *userService) FindOne(condition models.User) (*models.User, error) {
 }
 
 func (s *userService) FindAll(condition models.User) ([]*models.User, error) {
-	return s.userRepository.FindAll(condition);
+	return s.userRepository.FindAll(types.CursorPaginationArgs{});
 }
 
 func (s *userService) CursorPagination() {
@@ -44,6 +45,18 @@ func (s *userService) CursorPagination() {
 	// pageInfo
 	// hasNextPage
 	// hasPreviousPage
+	where := map[string]interface{}{
+		"email": "",
+		"username": "",
+	}
+	go s.userRepository.Count(where)
+	go s.userRepository.FindAll(types.CursorPaginationArgs{
+		Where: where,
+		Limit: 10,
+		Order: "id",
+		Sort: true,
+	});
+
 }
 
 func (s *userService) DeleteOne(condition struct{Id int}) error {

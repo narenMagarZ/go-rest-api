@@ -37,6 +37,7 @@ func Authenticate(userService services.UserService) gin.HandlerFunc {
 		if err != nil {
 			fmt.Println("User doesn't exist")
 			c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized user"})
+			return
 		}
 		c.Set("user", userExists);
 		c.Next();
