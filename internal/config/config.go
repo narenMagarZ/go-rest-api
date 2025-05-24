@@ -20,6 +20,9 @@ type appConfig struct {
 	JwtSecretKey string
 	Port string
 	Db dbConfig
+	DefaultLimit int
+	DefaultOrderBy string
+	DefaultSortDesc bool
 }
 
 func AppConfig() appConfig {
@@ -43,6 +46,9 @@ func AppConfig() appConfig {
 			DbPassword: os.Getenv("DB_PASSWORD"),
 			DbName: os.Getenv("DB_NAME"),
 		},
+		DefaultLimit: 10,
+		DefaultOrderBy: "created_at",
+		DefaultSortDesc: true,
 	}
 
 	return appConfigData

@@ -1,8 +1,10 @@
 package repositories
 
 import (
+	"rest-api/internal/types"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 
@@ -11,9 +13,9 @@ type BaseRepository[T any] interface {
 	UpdateOne(id int, entity T) error
 	FindById(id int) (*T, error)
 	Delete(id int) error
-	FindAll(condition T) ([]*T, error)
+	FindAll(args types.CursorPaginationArgs) ([]*T, error)
 	FindOne(condition T) (*T, error)
-	Count(condition T) *int64
+	Count(where any) *int64
 }
 
 type baseRepository[T any] struct {
@@ -42,9 +44,16 @@ func (r *baseRepository[T]) Delete(id int) error {
 	return r.db.Delete(new(T), id).Error
 }
 
-func (r *baseRepository[T]) FindAll(condition T) ([]*T, error) {
+func (r *baseRepository[T]) FindAll(args types.CursorPaginationArgs) ([]*T, error) {
 	var entities []*T
-	err := r.db.Where(condition).Find(&entities).Error
+	err := r.db.Where(args.Where).Find(&entities).
+	Limit(args.Limit).
+	Order(clause.OrderByColumn{
+		Column: clause.Column{
+			Name: args.Order}, 
+			Desc: args.Sort,
+	}).
+	Error
 	return entities, err
 }
 
@@ -54,8 +63,8 @@ func (r *baseRepository[T]) FindOne(condition T) (*T, error) {
 	return &entity, err
 }
 
-func (r *baseRepository[T]) Count(condition T) *int64 {
+func (r *baseRepository[T]) Count(where any) *int64 {
 	var count *int64
-	r.db.Where(condition).Count(count);
+	r.db.Where(where).Count(count);
 	return count
 }

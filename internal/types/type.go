@@ -16,3 +16,15 @@ type SignupPayload struct {
 	Email string `json:"email"`
 	Password string `json:"password"`
 }
+
+type AppResponse struct {
+	Code int
+	Response any
+}
+
+type CursorPaginationArgs struct {
+	Where map[string]interface{}
+	Limit int
+	Order string
+	Sort bool
+}
