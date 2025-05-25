@@ -7,7 +7,6 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-
 type BaseRepository[T any] interface {
 	Create(entity T) error
 	UpdateOne(id int, entity T) error
@@ -47,13 +46,13 @@ func (r *baseRepository[T]) Delete(id int) error {
 func (r *baseRepository[T]) FindAll(args types.CursorPaginationArgs) ([]*T, error) {
 	var entities []*T
 	err := r.db.Where(args.Where).Find(&entities).
-	Limit(args.Limit).
-	Order(clause.OrderByColumn{
-		Column: clause.Column{
-			Name: args.Order}, 
+		Limit(args.Limit).
+		Order(clause.OrderByColumn{
+			Column: clause.Column{
+				Name: args.Order},
 			Desc: args.Sort,
-	}).
-	Error
+		}).
+		Error
 	return entities, err
 }
 
@@ -65,6 +64,6 @@ func (r *baseRepository[T]) FindOne(condition T) (*T, error) {
 
 func (r *baseRepository[T]) Count(where any) *int64 {
 	var count *int64
-	r.db.Where(where).Count(count);
+	r.db.Where(where).Count(count)
 	return count
 }

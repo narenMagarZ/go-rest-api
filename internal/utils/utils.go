@@ -14,16 +14,15 @@ type JwtTokenClaims struct {
 }
 
 func HashText(text string) (string, error) {
-	hash, err := bcrypt.GenerateFromPassword([]byte(text), bcrypt.DefaultCost);
+	hash, err := bcrypt.GenerateFromPassword([]byte(text), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err
 	}
 	return string(hash), nil
 }
 
-
 func CompareHash(text string, hashedText string) error {
-	return bcrypt.CompareHashAndPassword([]byte(hashedText), []byte(text));
+	return bcrypt.CompareHashAndPassword([]byte(hashedText), []byte(text))
 }
 
 func GenerateToken(email string) (string, error) {
@@ -38,7 +37,6 @@ func GenerateToken(email string) (string, error) {
 	}
 	return signedToken, nil
 }
-
 
 func VerifyToken(token string) (*JwtTokenClaims, error) {
 	// parses, validates, verifies the signature and returns the parsed token
