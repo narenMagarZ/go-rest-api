@@ -6,7 +6,6 @@ import (
 	"gorm.io/gorm"
 )
 
-
 type UserRepository interface {
 	BaseRepository[models.User]
 }

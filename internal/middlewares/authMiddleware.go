@@ -12,7 +12,7 @@ import (
 )
 
 func Logger() gin.HandlerFunc {
-	return func (c *gin.Context)  {
+	return func(c *gin.Context) {
 		c.Next()
 	}
 }
@@ -39,9 +39,7 @@ func Authenticate(userService services.UserService) gin.HandlerFunc {
 			c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized user"})
 			return
 		}
-		c.Set("user", userExists);
-		c.Next();
+		c.Set("user", userExists)
+		c.Next()
 	}
 }
-
-

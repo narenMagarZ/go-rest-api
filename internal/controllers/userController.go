@@ -25,58 +25,58 @@ func (c *userController) GetUser(ctx *gin.Context) {
 	paramId := ctx.Param("id")
 	if paramId == "" {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Please provide user id."})
-		return;
+		return
 	}
-	id, err := strconv.Atoi(paramId);
+	id, err := strconv.Atoi(paramId)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"message": "Invalid user id",
 		})
-		return;
+		return
 	}
 
-	user, err := c.userService.FindById(id);
+	user, err := c.userService.FindById(id)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			ctx.JSON(http.StatusNotFound, gin.H{
 				"message": "User not found",
 			})
-			return;
+			return
 		}
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Internal server error",
 		})
-		return;
+		return
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "User fetched successfully",
-		"data": user,
+		"data":    user,
 	})
-	return;
+	return
 }
 
 func (c *userController) UpdateUser(ctx *gin.Context) {
 	paramId := ctx.Param("id")
 	if paramId == "" {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Please provide user id."})
-		return;
+		return
 	}
 
 	id, err := strconv.Atoi(paramId)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid user id."})
-		return;
+		return
 	}
-	_, err = c.userService.FindById(id);
-	
+	_, err = c.userService.FindById(id)
+
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			ctx.JSON(http.StatusNotFound, gin.H{"message": "User not found"});
-			return;
+			ctx.JSON(http.StatusNotFound, gin.H{"message": "User not found"})
+			return
 		}
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to update user"})
-		return;
+		return
 	}
 
 	data, err := io.ReadAll(ctx.Request.Body)
@@ -84,17 +84,17 @@ func (c *userController) UpdateUser(ctx *gin.Context) {
 	err = json.Unmarshal(data, &payload)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to update user"})
-		return;
+		return
 	}
 	err = c.userService.UpdateOne(id, payload)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to update user"})
-		return;
+		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "User updated successfully"});
-	return;
+	ctx.JSON(http.StatusOK, gin.H{"message": "User updated successfully"})
+	return
 }
 
 func (c *userController) GetAllUsers(ctx *gin.Context) {
@@ -104,28 +104,28 @@ func (c *userController) DeleteUser(ctx *gin.Context) {
 	paramId := ctx.Param("id")
 	if paramId == "" {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Please provide user id"})
-		return;
+		return
 	}
-	id, err := strconv.Atoi(paramId);
+	id, err := strconv.Atoi(paramId)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid user id"})
-		return;
+		return
 	}
-	_, err = c.userService.FindById(id);
+	_, err = c.userService.FindById(id)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			ctx.JSON(http.StatusNotFound, gin.H{"message": "User not found"})
-			return;
+			return
 		}
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to delete user"})
 	}
-	err = c.userService.DeleteOne(struct{Id int}{Id: id});
+	err = c.userService.DeleteOne(struct{ Id int }{Id: id})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Failed to delete user",
 		})
-		return;
+		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"});
-	return;
+	ctx.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
+	return
 }

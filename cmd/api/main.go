@@ -18,17 +18,17 @@ func main() {
 
 	db := config.ConnectDB()
 
-	db.AutoMigrate(models.User{});
+	db.AutoMigrate(models.User{})
 
-	userRepository := repositories.NewUserRepository(db);
-	userService := services.NewUserService(userRepository);
+	userRepository := repositories.NewUserRepository(db)
+	userService := services.NewUserService(userRepository)
 
 	api := router.Group("/api/v1")
-	api.Use(middlewares.Logger());
+	api.Use(middlewares.Logger())
 	{
 		auth := api.Group("/auth")
-		authService := services.NewAuthService(userRepository);
-		authController := controllers.NewAuthController(userService, authService);
+		authService := services.NewAuthService(userRepository)
+		authController := controllers.NewAuthController(userService, authService)
 
 		{
 			auth.POST("/login", authController.Login)
@@ -36,10 +36,10 @@ func main() {
 		}
 
 		users := api.Group("/users")
-		users.Use(middlewares.Authenticate(userService));
+		users.Use(middlewares.Authenticate(userService))
 		{
-			
-			userController := controllers.NewUserController(userService);
+
+			userController := controllers.NewUserController(userService)
 
 			users.GET("/", userController.GetAllUsers)
 			users.GET("/:id", userController.GetUser)

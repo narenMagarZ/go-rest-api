@@ -15,10 +15,10 @@ func ConnectDB() *gorm.DB {
 		AppConfig().Db.DbPassword,
 		AppConfig().Db.DbName,
 	)
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{});
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		panic(err)
 	}
-	return db;
+	return db
 }

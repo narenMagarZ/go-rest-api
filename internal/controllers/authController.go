@@ -8,7 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
 type authController struct {
 	userService services.UserService
 	authService services.AuthService
@@ -25,27 +24,27 @@ func (ac *authController) Signup(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"message": "Invalid input",
 		})
-		return;
+		return
 	}
 
-	response := ac.authService.Signup(payload);
-	ctx.JSON(response.Code, response.Response);
-	return;
+	response := ac.authService.Signup(payload)
+	ctx.JSON(response.Code, response.Response)
+	return
 }
 
 func (ac *authController) Login(ctx *gin.Context) {
 	var reqPayload types.LoginPayload
-	err := ctx.ShouldBindJSON(&reqPayload);
+	err := ctx.ShouldBindJSON(&reqPayload)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"message": "Please provide valid request",
 		})
-		return;
+		return
 	}
 
-	response := ac.authService.Login(reqPayload);
+	response := ac.authService.Login(reqPayload)
 
 	ctx.JSON(response.Code, response.Response)
-	return;
+	return
 }
